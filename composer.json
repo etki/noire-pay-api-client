@@ -1,7 +1,9 @@
 {
     "name": "etki/noire-pay-api-client",
     "autoload": {
-        "Etki\\Api\\Clients\\NoirePay": "src/"
+        "psr-4": {
+            "Etki\\Api\\Clients\\NoirePay\\": "src/"
+        }
     },
     "require": {
         "guzzle/guzzle": "~3.0"
