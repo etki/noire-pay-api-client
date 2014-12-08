@@ -2,7 +2,7 @@
 namespace Transport\Message;
 
 
-use Etki\Api\Clients\NoirePay\Transport\Message\Renderer;
+use Etki\Api\Clients\NoirePay\Level\Api\Renderer;
 
 class RendererTest extends \Codeception\TestCase\Test
 {
@@ -19,7 +19,7 @@ class RendererTest extends \Codeception\TestCase\Test
     {
     }
 
-    public function inputProvider()
+    public function plainInputProvider()
     {
         return array(
             array(
@@ -62,20 +62,67 @@ IDENTIFICATION.INVOICEID=20090100012',
             )
         );
     }
+    public function inputProvider()
+    {
+        return array(
+            array(
+                array(
+                    'test' => array('a' => '12  ', 'b' => '12',),
+                    'n' => array('x' => 13,),
+                    //'d.z' => 13,
+                    'd' => array('z' => 13,),
+                ),
+                array(
+                    'test',
+                    null,
+                    'n',
+                    null,
+                    'z',
+                    null,
+                    'd',
+                    null
+                ),
+                'TEST.A=12  ' . PHP_EOL .
+                'TEST.B=12' . PHP_EOL .
+                PHP_EOL .
+                'N.X=13' . PHP_EOL .
+                PHP_EOL .
+                'D.Z=13',
+            ),
+        );
+    }
 
     // tests
 
     /**
      *
      *
-     * @dataProvider inputProvider
+     * @dataProvider plainInputProvider
      *
      * @return void
      * @since
      */
-    public function testMe($input, $expectedOutput)
+    public function testPlainRendering($input, $expectedOutput)
     {
-        $render = Renderer::render($input);
+        $render = Renderer::renderPlain($input);
         $this->assertSame($expectedOutput, $render);
+    }
+
+    /**
+     *
+     *
+     * @param $input
+     * @param $schema
+     * @param $expectedOutput
+     *
+     * @dataProvider inputProvider
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    public function testSchemaRendering(array $input, array $schema, $expectedOutput)
+    {
+        $render = Renderer::render($input, $schema);
+        $this->assertSame(trim($expectedOutput), $render);
     }
 }

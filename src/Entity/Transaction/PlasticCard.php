@@ -3,11 +3,15 @@
 namespace Etki\Api\Clients\NoirePay\Entity\Transaction;
 
 use Etki\Api\Clients\NoirePay\Entity\AbstractEntity;
+use Etki\Api\Clients\NoirePay\Utility\CardNumberFormatter;
+use Etki\Api\Clients\NoirePay\Utility\ExpirationDateParser;
 
 /**
  * This entity represents single card.
  *
- * @method $this setNumber(string $number)
+ * @method $this setHolder(string $holder)
+ * @method string getHolder()
+ * setNumber() is implemented in usual way
  * @method string getNumber()
  * @method $this setBrand(string $brand)
  * @method string getBrand()
@@ -25,6 +29,13 @@ use Etki\Api\Clients\NoirePay\Entity\AbstractEntity;
  */
 class PlasticCard extends AbstractEntity
 {
+    /**
+     * Card holder.
+     *
+     * @type string
+     * @since 0.1.0
+     */
+    protected $holder;
     /**
      * Card number.
      *
@@ -60,4 +71,32 @@ class PlasticCard extends AbstractEntity
      * @since 0.1.0
      */
     protected $securityNumber;
+
+    /**
+     * Sets card number.
+     *
+     * @param string $number Card number.
+     *
+     * @return $this
+     * @since 0.1.0
+     */
+    public function setNumber($number)
+    {
+        $this->number = CardNumberFormatter::formatCardNumber($number);
+        return $this;
+    }
+
+    /**
+     * Parses expiration date and sets corresponding fields.
+     *
+     * @param string $date Date to set.
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    public function setExpiryDate($date)
+    {
+        list($this->expiryMonth, $this->expiryYear)
+            = ExpirationDateParser::parseDate($date);
+    }
 }

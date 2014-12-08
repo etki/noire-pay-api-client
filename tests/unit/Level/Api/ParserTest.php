@@ -2,7 +2,7 @@
 namespace Transport\Message;
 
 
-use Etki\Api\Clients\NoirePay\Transport\Message\Parser;
+use Etki\Api\Clients\NoirePay\Level\Api\Parser;
 
 class ParserTest extends \Codeception\TestCase\Test
 {

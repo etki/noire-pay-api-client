@@ -7,7 +7,7 @@ use Etki\Api\Clients\NoirePay\Transport\TransportInterface;
 use Etki\Api\Clients\NoirePay\Transport\Transport;
 use Etki\Api\Clients\NoirePay\Transport\Message\Message;
 use Etki\Api\Clients\NoirePay\Entity\Transmission\Credentials;
-use Etki\Api\Clients\NoirePay\Entity\Transmission\SecurityData;
+use Etki\Api\Clients\NoirePay\Entity\Transmission\SecurityDetails;
 use Etki\Api\Clients\NoirePay\Entity\Transmission\TransmissionDetails;
 use Guzzle\Common\Exception\BadMethodCallException;
 
@@ -38,7 +38,7 @@ class Client
     /**
      * Security data.
      *
-     * @type SecurityData
+     * @type SecurityDetails
      * @since 0.1.0
      */
     protected $securityData;
@@ -62,13 +62,13 @@ class Client
      *
      * @param string              $url                 URL to touch.
      * @param Credentials         $credentials         Access credentials.
-     * @param SecurityData        $securityData        Security variables.
+     * @param SecurityDetails        $securityData        Security variables.
      * @param TransmissionDetails $transmissionDetails Transmission options.
      */
     public function __construct(
         $url,
         Credentials $credentials,
-        SecurityData $securityData,
+        SecurityDetails $securityData,
         TransmissionDetails $transmissionDetails
     ) {
         $this->url = $url;

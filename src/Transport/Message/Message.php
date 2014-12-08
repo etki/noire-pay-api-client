@@ -4,7 +4,7 @@ namespace Etki\Api\Clients\NoirePay\Transport\Message;
 
 use Etki\Api\Clients\NoirePay\Entity\Transaction;
 use Etki\Api\Clients\NoirePay\Entity\Transmission\Credentials;
-use Etki\Api\Clients\NoirePay\Entity\Transmission\SecurityData;
+use Etki\Api\Clients\NoirePay\Entity\Transmission\SecurityDetails;
 use Etki\Api\Clients\NoirePay\Entity\Transmission\TransmissionDetails;
 
 /**
@@ -182,12 +182,12 @@ class Message
     /**
      * Sets security data.
      *
-     * @param SecurityData $data
+     * @param SecurityDetails $data
      *
      * @return void
      * @since 0.1.0
      */
-    public function setSecurityData(SecurityData $data)
+    public function setSecurityData(SecurityDetails $data)
     {
         $this->setSectionItem('security', 'sender', $data->getSender());
     }
