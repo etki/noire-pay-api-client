@@ -2,6 +2,8 @@
 
 namespace Etki\Api\Clients\NoirePay\Entity\Transaction;
 
+use Etki\Api\Clients\NoirePay\Entity\AbstractEntity;
+
 /**
  * Customer address.
  *
@@ -21,7 +23,7 @@ namespace Etki\Api\Clients\NoirePay\Entity\Transaction;
  * @package Etki\Api\Clients\NoirePay\Entity\Transaction
  * @author  Etki <etki@etki.name>
  */
-class CustomerAddress
+class CustomerAddress extends AbstractEntity
 {
     /**
      * Customer country (2-letter ISO 3166 code).

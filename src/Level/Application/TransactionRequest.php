@@ -85,4 +85,25 @@ class TransactionRequest extends AbstractEntity
      * @since 0.1.0
      */
     protected $customer;
+
+    public function validate()
+    {
+        $this->assertAllPropertiesSet();
+        $this->securityDetails->assertAllPropertiesSet();
+        // credentials are set by default
+        $this->paymentDetails->assertAllPropertiesSet();
+        $this->plasticCard->assertAllPropertiesSet();
+        $this
+            ->customer
+            ->getAddress()
+            ->assertAllPropertiesSetExcept(array('state',));
+        $this
+            ->customer
+            ->getContacts()
+            ->assertPropertiesSet(array('ip', 'email'));
+        $this
+            ->customer
+            ->getPersonalDetails()
+            ->assertPropertiesSet(array('given', 'family',));
+    }
 }

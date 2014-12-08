@@ -2,6 +2,8 @@
 
 namespace Etki\Api\Clients\NoirePay\Entity\Transaction;
 
+use Etki\Api\Clients\NoirePay\Entity\AbstractEntity;
+
 /**
  * Holds all customer data.
  *
@@ -21,7 +23,7 @@ namespace Etki\Api\Clients\NoirePay\Entity\Transaction;
  * @package Etki\Api\Clients\NoirePay\Entity\Transaction
  * @author  Etki <etki@etki.name>
  */
-class CustomerContacts
+class CustomerContacts extends AbstractEntity
 {
     /**
      * Contact phone.

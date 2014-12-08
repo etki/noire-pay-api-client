@@ -2,7 +2,7 @@
 
 namespace Etki\Api\Clients\NoirePay\Entity;
 
-use Guzzle\Common\Exception\BadMethodCallException;
+use BadMethodCallException;
 
 /**
  * This class contains all basic functionality for a single entity.

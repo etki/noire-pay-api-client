@@ -2,19 +2,16 @@
 
 namespace Etki\Api\Clients\NoirePay\Entity;
 
-use Etki\Api\Clients\NoirePay\Entity\Transaction\PlasticCard;
-use Etki\Api\Clients\NoirePay\Entity\Transaction\PaymentDetails;
-use Etki\Api\Clients\NoirePay\Entity\Transaction\Identification;
+use Etki\Api\Clients\NoirePay\Level\Application\TransactionConfirmation;
+use Etki\Api\Clients\NoirePay\Level\Application\TransactionRequest;
 
 /**
  * Transaction wrapper.
  *
- * @method PlasticCard getPlasticCard()
- * @method $this setPlasticCard(PlasticCard $plasticCard)
- * @method PaymentDetails getPaymentDetails()
- * @method $this setPaymentDetails(PaymentDetails $paymentData)
- * @method Identification getIdentification()
- * @method $this setIdentification(Identification $identification)
+ * @method $this setTransactionRequest(TransactionRequest $request)
+ * @method TransactionRequest getTransactionRequest()
+ * @method $this setTransactionConfirmation()
+ * @method TransactionConfirmation getTransactionConfirmation()
  *
  * @version 0.1.0
  * @since   0.1.0
@@ -24,38 +21,17 @@ use Etki\Api\Clients\NoirePay\Entity\Transaction\Identification;
 class Transaction extends AbstractEntity
 {
     /**
-     * User card data.
+     * Transaction request.
      *
-     * @type PlasticCard
+     * @type TransactionRequest
      * @since 0.1.0
      */
-    protected $plasticCard;
+    protected $transactionRequest;
     /**
-     * Payment data.
+     * Transaction confirmation.
      *
-     * @type PaymentDetails
+     * @type TransactionConfirmation
      * @since 0.1.0
      */
-    protected $paymentDetails;
-
-    /**
-     * Transaction identification data.
-     *
-     * @type Identification
-     * @since 0.1.0
-     */
-    protected $identification;
-
-    /**
-     * Validates transaction.
-     *
-     * @return void
-     * @since 0.1.0
-     */
-    public function validate()
-    {
-        $this->assertPropertiesSet(array('plasticCard', 'paymentDetails',));
-        $this->paymentDetails->assertAllPropertiesSet();
-        $this->plasticCard->assertAllPropertiesSet();
-    }
+    protected $TransactionConfirmation;
 }

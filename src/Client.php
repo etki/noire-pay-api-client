@@ -3,6 +3,7 @@
 namespace Etki\Api\Clients\NoirePay;
 
 use Etki\Api\Clients\NoirePay\Entity\Transaction;
+use Etki\Api\Clients\NoirePay\Level\Application\TransactionRequest;
 use Etki\Api\Clients\NoirePay\Transport\TransportInterface;
 use Etki\Api\Clients\NoirePay\Transport\Transport;
 use Etki\Api\Clients\NoirePay\Transport\Message\Message;
@@ -41,7 +42,7 @@ class Client
      * @type SecurityDetails
      * @since 0.1.0
      */
-    protected $securityData;
+    protected $securityDetails;
     /**
      * Transmission details.
      *
@@ -73,7 +74,7 @@ class Client
     ) {
         $this->url = $url;
         $this->credentials = $credentials;
-        $this->securityData = $securityData;
+        $this->securityDetails = $securityData;
         $this->transmissionDetails = $transmissionDetails;
         $this->transport = new Transport;
     }
@@ -89,7 +90,7 @@ class Client
     public function commitTransaction(Transaction $transaction)
     {
         try {
-            $transaction->validate();
+            $transaction->getTransactionRequest()->validate();
         } catch (BadMethodCallException $e) {
             $message = 'Malformed transaction: ' . $e->getMessage();
             $exception = new BadMethodCallException($message, 0, $e);
@@ -98,7 +99,7 @@ class Client
         $transport = new Transport;
         $message = Message::createFromTransaction($transaction);
         $message->setSectionItem('request', 'version', '1.0');
-        $message->setSecurityData($this->securityData);
+        $message->setSecurityData($this->securityDetails);
         $message->setCredentials($this->credentials);
         $message->setTransmissionDetails($this->transmissionDetails);
         $transport->sendMessage($this->url, $message);
@@ -115,5 +116,22 @@ class Client
     public function setTransport(TransportInterface $transport)
     {
         $this->transport = $transport;
+    }
+
+    /**
+     * Creates initialized transaction request.
+     *
+     * @return Transaction
+     * @since 0.1.0
+     */
+    public function createTransaction()
+    {
+        $transactionRequest = new TransactionRequest;
+        $transactionRequest->setCredentials($this->credentials);
+        $transactionRequest->setSecurityDetails($this->securityDetails);
+        $transactionRequest->setTransmissionDetails($this->transmissionDetails);
+        $transaction = new Transaction;
+        $transaction->setTransactionRequest($transactionRequest);
+        return $transaction;
     }
 }
