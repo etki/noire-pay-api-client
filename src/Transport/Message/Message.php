@@ -62,6 +62,17 @@ class Message
         return $data;
     }
 
+    public function getDataAsPlainArray()
+    {
+        $data = array();
+        foreach ($this->data as $sectionKey => $sectionData) {
+            foreach ($sectionData as $key => $value) {
+                $data[$sectionKey . '.' . $key] = $value;
+            }
+        }
+        return $data;
+    }
+
     /**
      * Data setter.
      *
@@ -111,7 +122,9 @@ class Message
     public static function createFromTransaction(Transaction $transaction)
     {
         $message = new static;
-        $card = $transaction->getPlasticCard();
+        $request = $transaction->getTransactionRequest();
+        $card = $request->getPlasticCard();
+        $message->setSectionItem('account', 'holder', $card->getHolder());
         $message->setSectionItem('account', 'number', $card->getNumber());
         $message->setSectionItem('account', 'brand', $card->getBrand());
         $message->setSectionItem(
@@ -130,7 +143,7 @@ class Message
             $card->getSecurityNumber()
         );
 
-        $payment = $transaction->getPaymentDetails();
+        $payment = $request->getPaymentDetails();
         $message->setSectionItem('payment', 'code', $payment->getCode());
         $message->setSectionItem(
             'presentation',
@@ -144,7 +157,7 @@ class Message
         );
         $message->setSectionItem('presentation', 'usage', $payment->getUsage());
 
-        $identification = $transaction->getIdentification();
+        $identification = $request->getIdentification();
         $message->setSectionItem(
             'identification',
             'transactionid',
@@ -176,6 +189,43 @@ class Message
             $identification->getInvoiceId()
         );
 
+        $message->setSectionItem(
+            'name',
+            'given',
+            $request->getCustomer()->getPersonalDetails()->getGivenName()
+        );
+        $message->setSectionItem(
+            'name',
+            'family',
+            $request->getCustomer()->getPersonalDetails()->getFamilyName()
+        );
+        $message->setSectionItem(
+            'name',
+            'salutation',
+            $request->getCustomer()->getPersonalDetails()->getSalutation()
+        );
+        $message->setSectionItem(
+            'name',
+            'title',
+            $request->getCustomer()->getPersonalDetails()->getTitle()
+        );
+        $message->setSectionItem(
+            'name',
+            'company',
+            $request->getCustomer()->getPersonalDetails()->getTitle()
+        );
+
+        $address = $request->getCustomer()->getAddress();
+        $message->setSectionItem('address', 'street', $address->getStreet());
+        $message->setSectionItem('address', 'zip', $address->getZip());
+        $message->setSectionItem('address', 'city', $address->getCity());
+        $message->setSectionItem('address', 'state', $address->getState());
+        $message->setSectionItem('address', 'country', $address->getCountry());
+
+        $contact = $request->getCustomer()->getContacts();
+        $message->setSectionItem('contact', 'email', $contact->getEmail());
+        $message->setSectionItem('contact', 'ip', $contact->getEmail());
+
         return $message;
     }
 
@@ -203,7 +253,7 @@ class Message
     public function setCredentials(Credentials $credentials)
     {
         $this->setSectionItem('user', 'login', $credentials->getLogin());
-        $this->setSectionItem('user', 'password', $credentials->getPassword());
+        $this->setSectionItem('user', 'pwd', $credentials->getPassword());
     }
 
     /**

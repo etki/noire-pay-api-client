@@ -3,9 +3,10 @@
 namespace Etki\Api\Clients\NoirePay\Transport;
 
 use Etki\Api\Clients\NoirePay\Transport\Message\Message;
-use Etki\Api\Clients\NoirePay\Transport\Message\Parser;
-use Etki\Api\Clients\NoirePay\Transport\Message\Renderer;
+use Etki\Api\Clients\NoirePay\Level\Api\Parser;
+use Etki\Api\Clients\NoirePay\Level\Api\Renderer;
 use Guzzle\Http\Client;
+use Guzzle\Http\Exception\ClientErrorResponseException;
 
 /**
  * Message transport.
@@ -17,6 +18,26 @@ use Guzzle\Http\Client;
  */
 class Transport implements TransportInterface
 {
+    protected $defaultsSchema = array(
+        'request',
+        'security',
+        null,
+        'user',
+        null,
+        'transaction',
+        'identification',
+        null,
+        'payment',
+        'presentation',
+        null,
+        'account',
+        'name',
+        null,
+        'address',
+        null,
+        'contact',
+        'criterion',
+    );
     /**
      * Transports message to server.
      *
@@ -28,12 +49,21 @@ class Transport implements TransportInterface
      */
     public function sendMessage($url, Message $message)
     {
-        $render = Renderer::render($message->getData());
         $client = new Client();
-        $request = $client->post($url, array(), $render);
-        $response = $request->send();
+        $headers = array(
+            'Content-Type' => 'application/x-www-form-urlencoded;charset=UTF-8',
+        );
+        $request = $client->post($url, $headers, $message->getDataAsPlainArray());
+        try {
+            $response = $request->send();
+        } catch (ClientErrorResponseException $exception) {
+            throw $exception;
+        }
         $responseMessage = new Message;
-        $responseMessage->setData(Parser::parse($response->getBody(true)));
+        $data = array();
+        parse_str($response->getBody(true), $data);
+        $data = array_map('trim', $data);
+        $responseMessage->setData($data);
         return $responseMessage;
     }
 }

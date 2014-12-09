@@ -53,6 +53,7 @@ class Renderer
                 $prependSpacer = true;
                 continue;
             }
+            $section = strtoupper($section);
             if (!isset($message[$section])) {
                 continue;
             }
