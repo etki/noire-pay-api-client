@@ -7,6 +7,7 @@ use Etki\Api\Clients\NoirePay\Exception\Level\Application\UnsuccessfulResponseEx
 use Etki\Api\Clients\NoirePay\Level\Application\TransactionConfirmation;
 use Etki\Api\Clients\NoirePay\Level\Application\TransactionRequest;
 use Etki\Api\Clients\NoirePay\Level\Http\HttpListenerInterface;
+use Etki\Api\Clients\NoirePay\Level\Http\MessageListenerInterface;
 use Etki\Api\Clients\NoirePay\Transport\TransportInterface;
 use Etki\Api\Clients\NoirePay\Transport\Transport;
 use Etki\Api\Clients\NoirePay\Transport\Message\Message;
@@ -196,5 +197,18 @@ class Client
     public function setHttpListener(HttpListenerInterface $listener)
     {
         $this->transport->setListener($listener);
+    }
+
+    /**
+     * Sets message listener.
+     *
+     * @param MessageListenerInterface $listener Listener to set,
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    public function setMessageListener(MessageListenerInterface $listener)
+    {
+        $this->transport->setMessageListener($listener);
     }
 }

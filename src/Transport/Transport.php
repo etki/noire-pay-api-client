@@ -8,6 +8,7 @@ use Guzzle\Http\Message\Response as GuzzleResponse;
 use Etki\Api\Clients\NoirePay\Transport\Message\Message;
 use Guzzle\Http\Client;
 use Guzzle\Http\Exception\ClientErrorResponseException;
+use Etki\Api\Clients\NoirePay\Level\Http\MessageListenerInterface;
 
 /**
  * Message transport.
@@ -26,6 +27,13 @@ class Transport implements TransportInterface
      * @since 0.1.0
      */
     protected $listeners = array();
+    /**
+     * Listeners
+     *
+     * @type MessageListenerInterface[]
+     * @since 0.1.0
+     */
+    protected $messageListeners = array();
     /**
      * Transports message to server.
      *
@@ -66,6 +74,20 @@ class Transport implements TransportInterface
     }
 
     /**
+     *
+     *
+     * @param MessageListenerInterface $listener
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    public function setMessageListener(MessageListenerInterface $listener)
+    {
+        $this->messageListeners[] = $listener;
+        $this->messageListeners = array_unique($this->messageListeners);
+    }
+
+    /**
      * Logs conversation.
      *
      * @param GuzzleRequest  $request  Request.
@@ -80,6 +102,22 @@ class Transport implements TransportInterface
     ) {
         foreach ($this->listeners as $listener) {
             $listener->observe($request, $response);
+        }
+    }
+
+    /**
+     * Logs messages.
+     *
+     * @param Message $request  Request message.
+     * @param Message $response Response message.
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    protected function logMessages(Message $request, Message $response)
+    {
+        foreach ($this->messageListeners as $listener) {
+            $listener->observeMessageConversation($request, $response);
         }
     }
 }
