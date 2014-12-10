@@ -15,6 +15,8 @@ use Etki\Api\Clients\NoirePay\Entity\AbstractEntity;
  * @method bool getSuccess()
  * @method $this setSuccess(bool $success)
  *
+ * @deprecated Entity\Transaction is currently used
+ *
  * @version 0.1.0
  * @since   0.1.0
  * @package Etki\Api\Clients\NoirePay\Level\Application

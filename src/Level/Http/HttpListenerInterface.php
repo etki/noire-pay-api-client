@@ -2,6 +2,9 @@
 
 namespace Etki\Api\Clients\NoirePay\Level\Http;
 
+use Guzzle\Http\Message\Request as GuzzleRequest;
+use Guzzle\Http\Message\Response as GuzzleResponse;
+
 /**
  * Observes HTTP communication.
  *
@@ -15,11 +18,11 @@ interface HttpListenerInterface
     /**
      * Observes HTTP communication.
      *
-     * @param Request  $request
-     * @param Response $response
+     * @param GuzzleRequest  $request  Guzzle request.
+     * @param GuzzleResponse $response Guzzle response.
      *
      * @return void
      * @since 0.1.0
      */
-    public function observe(Request $request, Response $response);
+    public function observe(GuzzleRequest $request, GuzzleResponse $response);
 }

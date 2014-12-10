@@ -33,5 +33,5 @@ class Transaction extends AbstractEntity
      * @type TransactionConfirmation
      * @since 0.1.0
      */
-    protected $TransactionConfirmation;
+    protected $transactionConfirmation;
 }
