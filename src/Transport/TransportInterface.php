@@ -2,6 +2,7 @@
 
 namespace Etki\Api\Clients\NoirePay\Transport;
 
+use Etki\Api\Clients\NoirePay\Level\Http\HttpListenerInterface;
 use Etki\Api\Clients\NoirePay\Transport\Message\Message;
 
 /**
@@ -24,4 +25,14 @@ interface TransportInterface
      * @since 0.1.0
      */
     public function sendMessage($url, Message $message);
+
+    /**
+     * Sets listener.
+     *
+     * @param HttpListenerInterface $listener Listener.
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    public function setListener(HttpListenerInterface $listener);
 }

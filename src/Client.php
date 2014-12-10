@@ -3,13 +3,17 @@
 namespace Etki\Api\Clients\NoirePay;
 
 use Etki\Api\Clients\NoirePay\Entity\Transaction;
+use Etki\Api\Clients\NoirePay\Exception\Level\Application\UnsuccessfulResponseException;
+use Etki\Api\Clients\NoirePay\Level\Application\TransactionConfirmation;
 use Etki\Api\Clients\NoirePay\Level\Application\TransactionRequest;
+use Etki\Api\Clients\NoirePay\Level\Http\HttpListenerInterface;
 use Etki\Api\Clients\NoirePay\Transport\TransportInterface;
 use Etki\Api\Clients\NoirePay\Transport\Transport;
 use Etki\Api\Clients\NoirePay\Transport\Message\Message;
 use Etki\Api\Clients\NoirePay\Entity\Transmission\Credentials;
 use Etki\Api\Clients\NoirePay\Entity\Transmission\SecurityDetails;
 use Etki\Api\Clients\NoirePay\Entity\Transmission\TransmissionDetails;
+use Etki\Api\Clients\NoirePay\Level\Application\TransactionListenerInterface;
 use Guzzle\Common\Exception\BadMethodCallException;
 
 /**
@@ -54,9 +58,16 @@ class Client
      * Transport
      *
      * @type TransportInterface
-     * @since
+     * @since 0.1.0
      */
     protected $transport;
+    /**
+     * List of transaction listeners.
+     *
+     * @type TransactionListenerInterface[]
+     * @since 0.1.0
+     */
+    protected $transactionListeners = array();
 
     /**
      * Simple initializer.
@@ -84,7 +95,7 @@ class Client
      *
      * @param Transaction $transaction Transaction to commit.
      *
-     * @return void
+     * @return Transaction committed transaction.
      * @since 0.1.0
      */
     public function commitTransaction(Transaction $transaction)
@@ -102,7 +113,16 @@ class Client
         $message->setSecurityData($this->securityDetails);
         $message->setCredentials($this->credentials);
         $message->setTransmissionDetails($this->transmissionDetails);
-        $transport->sendMessage($this->url, $message);
+        $response = $transport->sendMessage($this->url, $message);
+        $transactionResponse = $response->createTransactionConfirmation();
+        $transaction->setTransactionConfirmation($transactionResponse);
+        $this->logTransaction($transaction);
+        if ($transactionResponse->getProcessingStatus()->getReasonCode() !== '00'
+            || $transactionResponse->getProcessingStatus()->getStatusCode() !== '90'
+        ) {
+            throw new UnsuccessfulResponseException;
+        }
+        return $transaction;
     }
 
     /**
@@ -116,6 +136,36 @@ class Client
     public function setTransport(TransportInterface $transport)
     {
         $this->transport = $transport;
+    }
+
+    /**
+     * Sets new transaction listener.
+     *
+     * @param TransactionListenerInterface $listener Дшыеутук
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    public function setTransactionListener(
+        TransactionListenerInterface $listener
+    ) {
+        $this->transactionListeners[] = $listener;
+        $this->transactionListeners = array_unique($this->transactionListeners);
+    }
+
+    /**
+     * Logs transaction.
+     *
+     * @param Transaction $transaction Transaction to listen.
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    protected function logTransaction(Transaction $transaction)
+    {
+        foreach ($this->transactionListeners as $listener) {
+            $listener->observeTransaction($transaction);
+        }
     }
 
     /**
@@ -133,5 +183,18 @@ class Client
         $transaction = new Transaction;
         $transaction->setTransactionRequest($transactionRequest);
         return $transaction;
+    }
+
+    /**
+     * Sets HTTP listener.
+     *
+     * @param HttpListenerInterface $listener Listener.
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    public function setHttpListener(HttpListenerInterface $listener)
+    {
+        $this->transport->setListener($listener);
     }
 }

@@ -6,6 +6,9 @@ use Etki\Api\Clients\NoirePay\Entity\Transaction;
 use Etki\Api\Clients\NoirePay\Entity\Transmission\Credentials;
 use Etki\Api\Clients\NoirePay\Entity\Transmission\SecurityDetails;
 use Etki\Api\Clients\NoirePay\Entity\Transmission\TransmissionDetails;
+use Etki\Api\Clients\NoirePay\Level\Application\TransactionConfirmation;
+use Etki\Api\Clients\NoirePay\Entity\Transaction\Response\PaymentDetails
+    as ConfirmationPaymentDetails;
 
 /**
  * This class encapsulates message transferred to Noire Pay API.
@@ -107,6 +110,33 @@ class Message
             $this->data[$sectionKey] = array();
         }
         $this->data[$sectionKey][$itemKey] = (string) $value;
+    }
+
+    /**
+     * Retrieves section item
+     *
+     * @param string $sectionKey Section key.
+     * @param string $itemKey    Item key.
+     *
+     * @return mixed
+     * @since 0.1.0
+     */
+    public function getSectionItem($sectionKey, $itemKey)
+    {
+        list($sectionKey, $itemKey) = array_map('strtoupper', func_get_args());
+        if (!isset($this->data[$sectionKey])) {
+            $message = sprintf('Section `%s` doesn\'t exist', $sectionKey);
+            throw new \BadMethodCallException($message);
+        }
+        if (!isset($this->data[$sectionKey][$itemKey])) {
+            $message = sprintf(
+                'Item `%s` doesn\'t exist in section `%s`',
+                $itemKey,
+                $sectionKey
+            );
+            throw new \BadMethodCallException($message);
+        }
+        return $this->data[$sectionKey][$itemKey];
     }
 
     /**
@@ -227,6 +257,47 @@ class Message
         $message->setSectionItem('contact', 'ip', $contact->getEmail());
 
         return $message;
+    }
+
+    /**
+     * Creates transaction confirmation from current instance.
+     *
+     * @return TransactionConfirmation
+     * @since 0.1.0
+     */
+    public function createTransactionConfirmation()
+    {
+        $confirmation = new TransactionConfirmation;
+
+        $paymentDetails = new ConfirmationPaymentDetails;
+        $paymentDetails->setCode($this->getSectionItem('payment', 'code'));
+        $paymentDetails->setAmount($this->getSectionItem('presentation', 'amount'));
+        $paymentDetails->setCurrency($this->getSectionItem('presentation', 'currency'));
+        $paymentDetails->setClearingAmount($this->getSectionItem('clearing', 'amount'));
+        $paymentDetails->setClearingCurrency($this->getSectionItem('clearing', 'currency'));
+        $confirmation->setPaymentDetails($paymentDetails);
+
+        $verification = new Transaction\Response\Verification();
+        $verification->setSecurityHash($this->getSectionItem('security', 'hash'));
+        $confirmation->setVerification($verification);
+
+        $processingStatus = new Transaction\Response\ProcessingStatus();
+        $processingStatus->setCode($this->getSectionItem('processing', 'code'));
+        $processingStatus->setReason($this->getSectionItem('processing', 'reason'));
+        $processingStatus->setReasonCode($this->getSectionItem('processing', 'reason.code'));
+        $processingStatus->setStatus($this->getSectionItem('processing', 'status'));
+        $processingStatus->setStatusCode($this->getSectionItem('processing', 'status.code'));
+        $processingStatus->setReturn($this->getSectionItem('processing', 'return'));
+        $processingStatus->setReturnCode($this->getSectionItem('processing', 'return.code'));
+        $confirmation->setProcessingStatus($processingStatus);
+
+        $identification = new Transaction\Identification;
+        $identification->setTransactionId($this->getSectionItem('identification', 'transactionId'));
+        $identification->setShortId($this->getSectionItem('identification', 'shortId'));
+        $identification->setUniqueId($this->getSectionItem('identification', 'uniqueId'));
+        $confirmation->setIdentification($identification);
+
+        return $confirmation;
     }
 
     /**
