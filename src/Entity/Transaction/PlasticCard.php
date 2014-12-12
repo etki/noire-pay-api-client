@@ -96,7 +96,8 @@ class PlasticCard extends AbstractEntity
      */
     public function setExpiryDate($date)
     {
-        list($this->expiryMonth, $this->expiryYear)
-            = ExpirationDateParser::parseDate($date);
+        $expiry = ExpirationDateParser::parseDate($date);
+        $this->expiryMonth = $expiry['month'];
+        $this->expiryYear = $expiry['year'];
     }
 }

@@ -139,6 +139,11 @@ class Message
         return $this->data[$sectionKey][$itemKey];
     }
 
+    public function getItem($key)
+    {
+        return $this->data[strtoupper($key)];
+    }
+
     /**
      * Creates message from transaction.
      *
@@ -270,31 +275,31 @@ class Message
         $confirmation = new TransactionConfirmation;
 
         $paymentDetails = new ConfirmationPaymentDetails;
-        $paymentDetails->setCode($this->getSectionItem('payment', 'code'));
-        $paymentDetails->setAmount($this->getSectionItem('presentation', 'amount'));
-        $paymentDetails->setCurrency($this->getSectionItem('presentation', 'currency'));
-        $paymentDetails->setClearingAmount($this->getSectionItem('clearing', 'amount'));
-        $paymentDetails->setClearingCurrency($this->getSectionItem('clearing', 'currency'));
+//        $paymentDetails->setCode($this->getSectionItem('payment', 'code'));
+//        $paymentDetails->setAmount($this->getSectionItem('presentation', 'amount'));
+//        $paymentDetails->setCurrency($this->getSectionItem('presentation', 'currency'));
+        $paymentDetails->setClearingAmount($this->getItem('clearing_amount'));
+        $paymentDetails->setClearingCurrency($this->getItem('clearing_currency'));
         $confirmation->setPaymentDetails($paymentDetails);
 
         $verification = new Transaction\Response\Verification();
-        $verification->setSecurityHash($this->getSectionItem('security', 'hash'));
+//        $verification->setSecurityHash($this->getItem('security_hash'));
         $confirmation->setVerification($verification);
 
         $processingStatus = new Transaction\Response\ProcessingStatus();
-        $processingStatus->setCode($this->getSectionItem('processing', 'code'));
-        $processingStatus->setReason($this->getSectionItem('processing', 'reason'));
-        $processingStatus->setReasonCode($this->getSectionItem('processing', 'reason.code'));
-        $processingStatus->setStatus($this->getSectionItem('processing', 'status'));
-        $processingStatus->setStatusCode($this->getSectionItem('processing', 'status.code'));
-        $processingStatus->setReturn($this->getSectionItem('processing', 'return'));
-        $processingStatus->setReturnCode($this->getSectionItem('processing', 'return.code'));
+        $processingStatus->setCode($this->getItem('processing_code'));
+        $processingStatus->setReason($this->getItem('processing_reason'));
+        $processingStatus->setReasonCode($this->getItem('processing_reason_code'));
+        $processingStatus->setStatus($this->getItem('processing_status'));
+        $processingStatus->setStatusCode($this->getItem('processing_status_code'));
+        $processingStatus->setReturn($this->getItem('processing_return'));
+        $processingStatus->setReturnCode($this->getItem('processing_return_code'));
         $confirmation->setProcessingStatus($processingStatus);
 
         $identification = new Transaction\Identification;
-        $identification->setTransactionId($this->getSectionItem('identification', 'transactionId'));
-        $identification->setShortId($this->getSectionItem('identification', 'shortId'));
-        $identification->setUniqueId($this->getSectionItem('identification', 'uniqueId'));
+        $identification->setTransactionId($this->getItem('identification_transactionId'));
+        $identification->setShortId($this->getItem('identification_shortId'));
+        $identification->setUniqueId($this->getItem('identification_uniqueId'));
         $confirmation->setIdentification($identification);
 
         return $confirmation;

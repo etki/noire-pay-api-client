@@ -14,12 +14,15 @@ use Etki\Api\Clients\NoirePay\Exception\Utility\InvalidDateFormatException;
  */
 class ExpirationDateParser
 {
+    /**
+     * Private constructor, only static method calls are allowed.
+     */
     private function __construct()
     {
     }
 
     /**
-     *
+     * Parses date.
      *
      * @return int[]
      * @since 0.1.0

@@ -15,6 +15,7 @@ class ExpirationDateParserTest extends \Codeception\TestCase\Test
     {
         return array(
             array('10/20', array(10, 2020,),),
+            array('10 / 2015', array(10, 2015,),),
             array('9/2011', array(9, 2011,),),
             array('11 -- 15', array(11, 2015,),),
             array('10.10', array(10, 2010,),),

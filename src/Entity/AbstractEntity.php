@@ -90,7 +90,7 @@ class AbstractEntity
             return;
         }
         $message = 'Following required properties are not set: ' .
-            implode(', ', $propertyNames);
+            implode(', ', $missing);
         throw new BadMethodCallException($message);
     }
 

@@ -91,7 +91,7 @@ class TransactionRequest extends AbstractEntity
         $this->assertAllPropertiesSet();
         $this->securityDetails->assertAllPropertiesSet();
         // credentials are set by default
-        $this->paymentDetails->assertAllPropertiesSet();
+        $this->paymentDetails->assertAllPropertiesSetExcept(array('usage'));
         $this->plasticCard->assertAllPropertiesSet();
         $this
             ->customer
