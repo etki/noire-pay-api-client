@@ -56,6 +56,8 @@ class Transport implements TransportInterface
         parse_str($response->getBody(true), $data);
         $data = array_map('trim', $data);
         $responseMessage->setData($data);
+        $this->logMessages($message, $responseMessage);
+        $this->logConversation($request, $response);
         return $responseMessage;
     }
 
