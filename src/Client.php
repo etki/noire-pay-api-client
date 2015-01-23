@@ -126,7 +126,7 @@ class Client
                 $transactionResponse->getProcessingStatus()->getStatusCode(),
                 $transactionResponse->getProcessingStatus()->getReasonCode()
             );
-            throw new UnsuccessfulResponseException('Status code:');
+            throw new UnsuccessfulResponseException($exceptionMessage);
         }
         return $transaction;
     }
