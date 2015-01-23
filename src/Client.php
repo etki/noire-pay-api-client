@@ -122,9 +122,11 @@ class Client
             || $transactionResponse->getProcessingStatus()->getStatusCode() !== '90'
         ) {
             $exceptionMessage = sprintf(
-                'Status code: %s, reason code: %d',
+                'Status code: %s, reason code: %s, status: %s, reason: %s',
                 $transactionResponse->getProcessingStatus()->getStatusCode(),
-                $transactionResponse->getProcessingStatus()->getReasonCode()
+                $transactionResponse->getProcessingStatus()->getReasonCode(),
+                $transactionResponse->getProcessingStatus()->getStatus(),
+                $transactionResponse->getProcessingStatus()->getReason()
             );
             throw new UnsuccessfulResponseException($exceptionMessage);
         }
