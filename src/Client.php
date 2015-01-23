@@ -121,7 +121,12 @@ class Client
         if ($transactionResponse->getProcessingStatus()->getReasonCode() !== '00'
             || $transactionResponse->getProcessingStatus()->getStatusCode() !== '90'
         ) {
-            throw new UnsuccessfulResponseException;
+            $exceptionMessage = sprintf(
+                'Status code: %s, reason code: %d',
+                $transactionResponse->getProcessingStatus()->getStatusCode(),
+                $transactionResponse->getProcessingStatus()->getReasonCode()
+            );
+            throw new UnsuccessfulResponseException('Status code:');
         }
         return $transaction;
     }
