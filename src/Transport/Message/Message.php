@@ -226,16 +226,6 @@ class Message
 
         $message->setSectionItem(
             'name',
-            'given',
-            $request->getCustomer()->getPersonalDetails()->getGivenName()
-        );
-        $message->setSectionItem(
-            'name',
-            'family',
-            $request->getCustomer()->getPersonalDetails()->getFamilyName()
-        );
-        $message->setSectionItem(
-            'name',
             'salutation',
             $request->getCustomer()->getPersonalDetails()->getSalutation()
         );

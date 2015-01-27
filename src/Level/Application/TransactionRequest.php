@@ -101,9 +101,5 @@ class TransactionRequest extends AbstractEntity
             ->customer
             ->getContacts()
             ->assertPropertiesSet(array('ip', 'email'));
-        $this
-            ->customer
-            ->getPersonalDetails()
-            ->assertPropertiesSet(array('givenName', 'familyName',));
     }
 }
