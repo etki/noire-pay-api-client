@@ -6,6 +6,7 @@ use Etki\Api\Clients\NoirePay\Entity\Transaction;
 use Etki\Api\Clients\NoirePay\Entity\Transmission\Credentials;
 use Etki\Api\Clients\NoirePay\Entity\Transmission\SecurityDetails;
 use Etki\Api\Clients\NoirePay\Entity\Transmission\TransmissionDetails;
+use Etki\Api\Clients\NoirePay\Exception\Transport\ItemDoesNotExistException;
 use Etki\Api\Clients\NoirePay\Level\Application\TransactionConfirmation;
 use Etki\Api\Clients\NoirePay\Entity\Transaction\Response\PaymentDetails
     as ConfirmationPaymentDetails;
@@ -139,9 +140,51 @@ class Message
         return $this->data[$sectionKey][$itemKey];
     }
 
+    /**
+     * Retrieves single message key.
+     *
+     * @param string $key Item key.
+     *
+     * @return mixed
+     * @since 0.1.0
+     */
     public function getItem($key)
     {
+        if (!$this->hasItem($key)) {
+            throw new ItemDoesNotExistException($key);
+        }
         return $this->data[strtoupper($key)];
+    }
+
+    /**
+     * Tries to get item or returns default value.
+     *
+     * @param string $key          Item key.
+     * @param mixed  $defaultValue Default value to provide in case key is not
+     *                             present.
+     *
+     * @return mixed|null
+     * @since 0.1.1
+     */
+    public function tryGetItem($key, $defaultValue = null)
+    {
+        if (!$this->hasItem($key)) {
+            return $defaultValue;
+        }
+        return $this->getItem($key);
+    }
+
+    /**
+     * Tells if message has particular item.
+     *
+     * @param string $key Item key.
+     *
+     * @return bool
+     * @since 0.1.1
+     */
+    public function hasItem($key)
+    {
+        return isset($this->data[strtoupper($key)]);
     }
 
     /**
@@ -268,8 +311,8 @@ class Message
 //        $paymentDetails->setCode($this->getSectionItem('payment', 'code'));
 //        $paymentDetails->setAmount($this->getSectionItem('presentation', 'amount'));
 //        $paymentDetails->setCurrency($this->getSectionItem('presentation', 'currency'));
-        $paymentDetails->setClearingAmount($this->getItem('clearing_amount'));
-        $paymentDetails->setClearingCurrency($this->getItem('clearing_currency'));
+        $paymentDetails->setClearingAmount($this->tryGetItem('clearing_amount'));
+        $paymentDetails->setClearingCurrency($this->tryGetItem('clearing_currency'));
         $confirmation->setPaymentDetails($paymentDetails);
 
         $verification = new Transaction\Response\Verification();
@@ -277,19 +320,19 @@ class Message
         $confirmation->setVerification($verification);
 
         $processingStatus = new Transaction\Response\ProcessingStatus();
-        $processingStatus->setCode($this->getItem('processing_code'));
-        $processingStatus->setReason($this->getItem('processing_reason'));
-        $processingStatus->setReasonCode($this->getItem('processing_reason_code'));
-        $processingStatus->setStatus($this->getItem('processing_status'));
-        $processingStatus->setStatusCode($this->getItem('processing_status_code'));
-        $processingStatus->setReturn($this->getItem('processing_return'));
-        $processingStatus->setReturnCode($this->getItem('processing_return_code'));
+        $processingStatus->setCode($this->tryGetItem('processing_code'));
+        $processingStatus->setReason($this->tryGetItem('processing_reason'));
+        $processingStatus->setReasonCode($this->tryGetItem('processing_reason_code'));
+        $processingStatus->setStatus($this->tryGetItem('processing_status'));
+        $processingStatus->setStatusCode($this->tryGetItem('processing_status_code'));
+        $processingStatus->setReturn($this->tryGetItem('processing_return'));
+        $processingStatus->setReturnCode($this->tryGetItem('processing_return_code'));
         $confirmation->setProcessingStatus($processingStatus);
 
         $identification = new Transaction\Identification;
-        $identification->setTransactionId($this->getItem('identification_transactionId'));
-        $identification->setShortId($this->getItem('identification_shortId'));
-        $identification->setUniqueId($this->getItem('identification_uniqueId'));
+        $identification->setTransactionId($this->tryGetItem('identification_transactionId'));
+        $identification->setShortId($this->tryGetItem('identification_shortId'));
+        $identification->setUniqueId($this->tryGetItem('identification_uniqueId'));
         $confirmation->setIdentification($identification);
 
         return $confirmation;

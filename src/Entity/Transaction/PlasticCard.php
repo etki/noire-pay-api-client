@@ -29,6 +29,40 @@ use Etki\Api\Clients\NoirePay\Utility\ExpirationDateParser;
  */
 class PlasticCard extends AbstractEntity
 {
+    const BRAND_4B = '4B';
+    const BRAND_ADVANTAGE = 'ADVANTAGE';
+    const BRAND_AMERICAN_EXPRESS = 'AMEX';
+    const BRAND_ASYACARD = 'ASYACARD';
+    const BRAND_AXESS = 'AXESS';
+    const BRAND_BONUS = 'BONUS';
+    const BRAND_CABAL = 'CABAL';
+    const BRAND_CARDFINANS = 'CARDFINANS';
+    const BRAND_CARTE_BANCAIRE = 'CARTEBANCAIRE';
+    const BRAND_CARTE_BLEUE = 'CARTEBLEUE';
+    const BRAND_DANKORT = 'DANKORT';
+    const BRAND_DELTA = 'DELTA';
+    const BRAND_DINERS = 'DINERS';
+    const BRAND_DISCOVER = 'DISCOVER';
+    const BRAND_ELO = 'ELO';
+    const BRAND_EURO6000 = 'EURO6000';
+    const BRAND_HIPERCARD = 'HIPERCARD';
+    const BRAND_JCB = 'JCB';
+    const BRAND_LASER_CARD = 'LASER';
+    const BRAND_MAESTRO = 'MAESTRO';
+    const BRAND_MASTERCARD = 'MASTER';
+    const BRAND_MASTERPASS = 'MASTERPASS';
+    const BRAND_MAXIMUM = 'MAXIMUM';
+    const BRAND_PAYFAIR = 'PAYFAIR';
+    const BRAND_POSTFINANCE_KARTE_DIRECT = 'PF_KARTE_DIRECT';
+    const BRAND_POSTEPAY = 'POSTEPAY';
+    const BRAND_SERVIRED = 'SERVIRED';
+    const BRAND_SOLO = 'SOLO';
+    const BRAND_SWITCH = 'SWITCH';
+    const BRAND_VISA = 'VISA';
+    const BRAND_VISA_DEBIT = 'VISADEBIT';
+    const BRAND_VISA_ELECTRON = 'VISAELECTRON';
+    const BRAND_VPAY = 'VPAY';
+    const BRAND_WORLD = 'WORLD';
     /**
      * Card holder.
      *

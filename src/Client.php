@@ -118,15 +118,16 @@ class Client
         $transactionResponse = $response->createTransactionConfirmation();
         $transaction->setTransactionConfirmation($transactionResponse);
         $this->logTransaction($transaction);
-        if ($transactionResponse->getProcessingStatus()->getReasonCode() !== '00'
-            || $transactionResponse->getProcessingStatus()->getStatusCode() !== '90'
+        $status = $transactionResponse->getProcessingStatus();
+        if ($status->getReasonCode() !== '00'
+            || $status->getStatusCode() !== '90'
         ) {
             $exceptionMessage = sprintf(
                 'Status code: %s, reason code: %s, status: %s, reason: %s',
-                $transactionResponse->getProcessingStatus()->getStatusCode(),
-                $transactionResponse->getProcessingStatus()->getReasonCode(),
-                $transactionResponse->getProcessingStatus()->getStatus(),
-                $transactionResponse->getProcessingStatus()->getReason()
+                $status->getStatusCode(),
+                $status->getReasonCode(),
+                $status->getStatus(),
+                $status->getReason()
             );
             throw new UnsuccessfulResponseException($exceptionMessage);
         }
